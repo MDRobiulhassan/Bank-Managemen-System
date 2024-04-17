@@ -65,7 +65,7 @@ public class Main {
 
             while (choice != 4) {
                 System.out.println("\nUser Menu");
-                System.out.println("1.Credit\n2.Debit\n3.Account Details\n4.Log Out");
+                System.out.println("1.Credit\n2.Debit\n3.Account Details\n4.Search Transaction\n5.Log Out");
                 choice = in.nextInt();
                 switch (choice) {
                     case 1:
@@ -76,6 +76,9 @@ public class Main {
                         break;
                     case 3:
                         AccountDetails(username);
+                        break;
+                    case 4:
+                        Search(username);
                         break;
                     default:
                         System.out.println("Logged Out Successfully");
@@ -181,6 +184,39 @@ public class Main {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 System.out.print(line);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.getMessage());
+        }
+    }
+
+    void Search(String username) {
+        in.nextLine();
+        System.out.println("Enter Date (DD-MM-YYYY): ");
+        String searchDate = in.nextLine();
+        boolean found = false;
+
+        String filename = username + ".txt";
+        try (Scanner fileScanner = new Scanner(new File(filename))) {
+            if (fileScanner.hasNextLine()) {
+                String headers = fileScanner.nextLine();
+                System.out.println(headers);
+            }
+
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                String[] parts = line.split("\\s+");
+                if (parts.length >= 3) {
+                    String transactionDate = parts[2];
+                    if (transactionDate.equals(searchDate)) {
+                        System.out.println(line);
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) {
+                System.out.println("No transactions found for the date: " + searchDate);
             }
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + e.getMessage());
